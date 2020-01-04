@@ -1,0 +1,26 @@
+html,
+body {
+    height: 100%;
+    color: #333;
+    background-color: #fff;
+}
+
+* {
+    /* 
+    chrome56+->提高体验->touchstart||touchmove->passive:true
+    // 解决方案
+    // 1. 不用touch (可以click->移动端300ms延迟必现bug)
+    // 2. touch->none
+    */
+    touch-action: none;
+    box-sizing: border-box;
+}
+
+#root,
+.App {
+    height: 100%;
+}
+
+p {
+    margin: 0;
+}
