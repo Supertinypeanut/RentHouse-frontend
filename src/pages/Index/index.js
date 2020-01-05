@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 // 导入ant组件
-import { Carousel, Flex, Grid } from 'antd-mobile';
+import { Carousel, Flex, Grid, WingBlank } from 'antd-mobile';
 // 导入请求
-import { getSweiperData, getGroupsData } from '../../api/home'
+import { getSweiperData, getGroupsData, getNewsData } from '../../api/home'
 
 // 导入样式
 import './index.scss'
@@ -49,7 +49,10 @@ class index extends PureComponent {
     autoplay:false,
     
     // 租房小组数据
-    groupsData: []
+    groupsData: [],
+
+    // 最新资讯
+    newsData: []
   }
 
    /**************** 模版渲染函数 *********************/
@@ -125,6 +128,28 @@ class index extends PureComponent {
     )
   }
 
+  // 渲染最新资讯
+  renderNews() {
+    return this.state.newsData.map(item => (
+      <div className="news-item" key={item.id}>
+        <div className="imgwrap">
+          <img
+            className="img"
+            src={`http://localhost:8080${item.imgSrc}`}
+            alt=""
+          />
+        </div>
+        <Flex className="content" direction="column" justify="between">
+          <h3 className="title">{item.title}</h3>
+          <Flex className="info" justify="between">
+            <span>{item.from}</span>
+            <span>{item.date}</span>
+          </Flex>
+        </Flex>
+      </div>
+    ))
+  }  
+
   /******************** 请求函数 ********************/ 
   // 获取轮播图
   async getSwiper(){
@@ -161,11 +186,29 @@ class index extends PureComponent {
     })
   }
 
+  // 获取最新
+  async getNews(){
+    const { data } = await getNewsData()
+
+    // 对响应数据校验
+    if (data.status !== 200) {
+      return
+    }
+
+    // 更新数据状态
+    this.setState(()=>{
+      return {
+        newsData: data.body
+      }
+    })
+  }
+
 
   // 节点挂载，进行状态修改，和数据请求操作
   componentDidMount(){
     this.getSwiper()
     this.getGroups()
+    this.getNews()
   }
 
   render() {
@@ -181,6 +224,12 @@ class index extends PureComponent {
 
         {/* 租房小组 */}
         <div className="group">{this.renderGroup()}</div>
+
+        {/* 最新资讯 */}
+        <div className="news">
+          <h3 className="group-title">最新资讯</h3>
+          <WingBlank size="md">{this.renderNews()}</WingBlank>
+        </div>
       </>
     )
   }

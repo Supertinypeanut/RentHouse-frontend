@@ -11,3 +11,11 @@ export const getGroupsData = (area = 'AREA|88cff55c-aaa4-e2e0') =>
             area
         }
     })
+
+// 最新资讯
+export const getNewsData = (area = 'AREA|88cff55c-aaa4-e2e0') =>
+    http.get('/home/news', {
+        params :{
+            area
+        }
+    })
