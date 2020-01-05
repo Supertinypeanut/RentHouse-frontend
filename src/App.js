@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Route, Redirect, Switch} from 'react-router-do
 
 // 导入组件
 import Home from './pages/Home'
+import Map from './pages/Map'
+import Search from './pages/Search'
+import CityList from './pages/CityList'
 
 function App() {
   return (
@@ -11,6 +14,9 @@ function App() {
       <Switch>
       <Route path="/" exact render={ ()=> <Redirect to="/home" /> }/>
       <Route path="/home" component={Home} />
+      <Route path="/map" component={Map} />
+      <Route path="/search" component={Search} />
+      <Route path="/cityList" component={CityList} />
       </Switch>
     </Router>
   );

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 // 导入ant组件
-import { Carousel, Flex, Grid, WingBlank } from 'antd-mobile';
+import { Carousel, Flex, Grid, WingBlank, NavBar, Icon } from 'antd-mobile';
 // 导入请求
 import { getSweiperData, getGroupsData, getNewsData } from '../../api/home'
 
@@ -12,6 +12,9 @@ import Nav1 from '../../asstes/images/nav-1.png'
 import Nav2 from '../../asstes/images/nav-2.png'
 import Nav3 from '../../asstes/images/nav-3.png'
 import Nav4 from '../../asstes/images/nav-4.png'
+
+// 导入顶部搜索栏
+import Search from '../../component/SearchHeader'
 
 // 导航数据
 const navs = [
@@ -214,6 +217,9 @@ class index extends PureComponent {
   render() {
     return (
       <>
+        {/* 搜索栏 */}
+        <Search cityName="北京"></Search>
+
         {/* 轮播图 */}
         {this.state.autoplay ? (<Carousel autoplay infinite >
           {this.renderSwiper()}
