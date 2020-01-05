@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 // 导入ant组件
-import { Carousel, Flex } from 'antd-mobile';
+import { Carousel, Flex, Grid } from 'antd-mobile';
 // 导入请求
-import { getSweiperData } from '../../api/home'
+import { getSweiperData, getGroupsData } from '../../api/home'
 
 // 导入样式
 import './index.scss'
@@ -43,10 +43,13 @@ const navs = [
 
 class index extends PureComponent {
   state = {
-      // 轮播图数据
-      swiperData: [],
-      imgHeight: 176,
-      autoplay:false
+    // 轮播图数据
+    swiperData: [],
+    imgHeight: 176,
+    autoplay:false,
+    
+    // 租房小组数据
+    groupsData: []
   }
 
    /**************** 模版渲染函数 *********************/
@@ -75,7 +78,7 @@ class index extends PureComponent {
   }
 
   // 渲染导航菜单4个
-  renderNavs = () => {
+  renderNavs(){
     return navs.map(item => {
       return (
         <Flex.Item
@@ -92,6 +95,34 @@ class index extends PureComponent {
         </Flex.Item>
       )
     })
+  }
+
+  // 渲染租房小组
+  renderGroup(){
+    return (
+      <>
+        <Flex className="group-title" justify="between">
+          <h3>租房小组</h3>
+          <span>更多</span>
+        </Flex>
+
+        <Grid
+          square={false}
+          hasLine={false}
+          data={this.state.groupsData}
+          columnNum={2}
+          renderItem={item => (
+            <Flex className="grid-item" justify="between">
+              <div className="desc">
+                <h3>{item.title}</h3>
+                <p>{item.desc}</p>
+              </div>
+              <img src={`http://localhost:8080${item.imgSrc}`} alt="" />
+            </Flex>
+          )}
+        />
+      </>
+    )
   }
 
   /******************** 请求函数 ********************/ 
@@ -113,10 +144,28 @@ class index extends PureComponent {
     })
   }
 
+  // 获取租房小组
+  async getGroups(){
+    const { data } = await getGroupsData()
+
+    // 对响应数据校验
+    if (data.status !== 200) {
+      return
+    }
+
+    // 更新数据状态
+    this.setState(()=>{
+      return {
+        groupsData: data.body
+      }
+    })
+  }
+
 
   // 节点挂载，进行状态修改，和数据请求操作
   componentDidMount(){
     this.getSwiper()
+    this.getGroups()
   }
 
   render() {
@@ -128,7 +177,10 @@ class index extends PureComponent {
         </Carousel>
 
         {/* 4个菜单 */}
-        <Flex>{this.renderNavs()}</Flex>
+        <Flex className="Navs">{this.renderNavs()}</Flex>
+
+        {/* 租房小组 */}
+        <div className="group">{this.renderGroup()}</div>
       </>
     )
   }
