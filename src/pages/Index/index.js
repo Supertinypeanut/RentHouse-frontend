@@ -215,9 +215,9 @@ class index extends PureComponent {
     return (
       <>
         {/* 轮播图 */}
-        <Carousel autoplay={this.state.autoplay} infinite >
+        {this.state.autoplay ? (<Carousel autoplay infinite >
           {this.renderSwiper()}
-        </Carousel>
+        </Carousel>) : ''}
 
         {/* 4个菜单 */}
         <Flex className="Navs">{this.renderNavs()}</Flex>
@@ -226,7 +226,7 @@ class index extends PureComponent {
         <div className="group">{this.renderGroup()}</div>
 
         {/* 最新资讯 */}
-        <div className="news">
+        <div className="news home">
           <h3 className="group-title">最新资讯</h3>
           <WingBlank size="md">{this.renderNews()}</WingBlank>
         </div>

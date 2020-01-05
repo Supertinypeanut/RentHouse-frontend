@@ -78,7 +78,7 @@ class index extends PureComponent {
       <>
         {/* 二级路由 */}
         <Switch>
-          <Route path="/" component={Index}/>
+          <Route path="/home" exact component={Index}/>
           <Route path="/home/list" component={House} />
           <Route path="/home/news" component={News} />
           <Route path="/home/profile" component={Profile} />
