@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 // 导入ant组件
-import { Carousel, Flex, Grid, WingBlank, NavBar, Icon } from 'antd-mobile';
+import { Carousel, Flex, Grid, WingBlank } from 'antd-mobile';
 // 导入请求
 import { getSweiperData, getGroupsData, getNewsData } from '../../api/home'
 
