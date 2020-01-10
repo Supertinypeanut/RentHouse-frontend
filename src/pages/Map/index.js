@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 
+import { NavBar, Icon } from 'antd-mobile';
+
 import './index.scss'
 
 class index extends PureComponent {
@@ -17,7 +19,18 @@ class index extends PureComponent {
     
   render() {
     return (
-      <div id="container" />
+      <>
+        {/* 导航栏 */}
+        <NavBar
+          mode="light"
+          icon={<Icon type="left" />}
+          onLeftClick={() => console.log(this.props.history.goBack())
+          }
+        >地图找房</NavBar>
+        {/* 百度地图容器 */}
+        <div id="container" />
+      </>
+
     );
   }
 }

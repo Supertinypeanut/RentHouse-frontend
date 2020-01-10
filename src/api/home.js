@@ -19,3 +19,7 @@ export const getNewsData = (area = 'AREA|88cff55c-aaa4-e2e0') =>
             area
         }
     })
+
+// 查询当前城市信息
+export const getCurrCityData = (name = '%E5%8C%97%E4%BA%AC%E5%B8%82') => 
+    http.get(`/area/info?name=${name}`)

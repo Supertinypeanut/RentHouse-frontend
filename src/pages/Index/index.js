@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 // 导入ant组件
-import { Carousel, Flex, Grid, WingBlank } from 'antd-mobile';
+import { Carousel, Flex, Grid, WingBlank, Toast } from 'antd-mobile';
 // 导入请求
-import { getSweiperData, getGroupsData, getNewsData } from '../../api/home'
+import { getSweiperData, getGroupsData, getNewsData, getCurrCityData } from '../../api/home'
 
 // 导入样式
 import './index.scss'
@@ -55,7 +55,13 @@ class index extends PureComponent {
     groupsData: [],
 
     // 最新资讯
-    newsData: []
+    newsData: [],
+
+    //当前城市信息
+    currCityInfo: { 
+      label:'北京',
+      value: 'AREA|88cff55c-aaa4-e2e0'
+    }
   }
 
    /**************** 模版渲染函数 *********************/
@@ -206,19 +212,48 @@ class index extends PureComponent {
     })
   }
 
+  // 获取当前城市信息
+  getCurrCity(){
+    // 获取百度地图当前位置
+    const { BMap } = window
+    var myCity = new BMap.LocalCity();
+    myCity.get(async (result)=>{
+      // 获取城市名
+      var cityName = result.name
+      // 获取当前城市详细信息
+      const { data } = await getCurrCityData(cityName)
+
+      // 判断是否请求成功
+      if (data.status !== 200) {
+        return Toast.info('当前定位失败！', 1)
+      }
+
+      // 更新当前城市位置
+      this.setState(()=>{
+        return { 
+          currCityInfo:{ 
+            label: data.body.label,
+            value: data.body.value
+          }
+        }
+      })
+    })
+  }
+
 
   // 节点挂载，进行状态修改，和数据请求操作
   componentDidMount(){
     this.getSwiper()
     this.getGroups()
-    this.getNews()
+    this.getNews() 
+    this.getCurrCity()
   }
 
   render() {
     return (
       <>
         {/* 搜索栏 */}
-        <Search cityName="北京"></Search>
+        <Search cityName={this.state.currCityInfo.label}></Search>
 
         {/* 轮播图 */}
         {this.state.autoplay ? (<Carousel autoplay infinite >
