@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 
 // ant组件
-import { NavBar, Icon } from 'antd-mobile';
+import { NavBar, Icon, List } from 'antd-mobile';
+
 
 // 导入api
 import { getCityData, getHotCityData } from '../../api/cityList'
@@ -10,6 +11,8 @@ import { getCityData, getHotCityData } from '../../api/cityList'
 import { getCurrCity } from '../../utils/currentCity'
 
 import './index.scss'
+
+const Item = List.Item
 
 class index extends PureComponent {
   state = {
@@ -23,6 +26,30 @@ class index extends PureComponent {
     showCityList: {}
   }
 
+  // 渲染展示数据列表
+  renderList(){
+    console.log(this.state.orderIndex)
+    return (
+      this.state.orderIndex.map((item, index) => {
+        return (
+          <List key={index} renderHeader={() => item} className="my-list">
+            {this.state.showCityList[item].map(cityItem => {
+              return (
+                <Item 
+                  key={cityItem.value}
+                  onClick={()=> console.log(this)
+                  }
+                  >
+                    {cityItem.label}
+                </Item>
+              )
+            })}
+          </List>
+        )
+      })
+    )
+  }
+
   // 获取城市列表数据
   async getCityList(){
     const { data } = await getCityData()
@@ -31,10 +58,11 @@ class index extends PureComponent {
       return {
         cityList : data.body
       }
-    },this.compileCityList)
+      // 获取热门城市
+    },this.getHotCityList)
   }
 
-  // 获取城市列表数据
+  // 获取热门城市列表数据
   async getHotCityList(){
     const { data } = await getHotCityData()
     
@@ -43,6 +71,8 @@ class index extends PureComponent {
       return {
         hotCityList : data.body
       }
+
+      // 编译列表
     },this.compileCityList)
   }
 
@@ -67,38 +97,40 @@ class index extends PureComponent {
     orderIndex.includes('Hot') || orderIndex.unshift('Hot')
     
     // 获取当前城市
-    getCurrCity(data => {
+    getCurrCity( data => {
       // 添加热门城市到展示数据
       showCityList['#'] = [data]
       // 防止数组二次添加#
       orderIndex.includes('#') || orderIndex.unshift('#')
-    })
-    
-    // 更新容器中展示数据
-    this.setState(()=>{
-      return { 
-        showCityList,
-        orderIndex
-      }
+
+      // 更新容器中展示数据
+      this.setState(()=>{
+        return { 
+          showCityList,
+          orderIndex
+        }
+      })
     })
   }
 
   componentDidMount(){
     // 获取城市列表
     this.getCityList()
-    // 获取热门城市
-    this.getHotCityList()
   }
 
   render() {
     return (
       <>
+        {/* 导航栏 */}
         <NavBar
           mode="light"
           icon={<Icon type="left" />}
           onLeftClick={() => this.props.history.goBack()
           }
         >城市列表</NavBar>
+
+        {/* 列表 */}
+        {this.renderList()}
       </>
     );
   }
