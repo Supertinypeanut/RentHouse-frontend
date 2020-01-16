@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 
 // ant组件
-import { NavBar, Icon, List } from 'antd-mobile';
+import { NavBar, Icon, List, Toast } from 'antd-mobile';
 
 
 // 导入api
-import { getCityData, getHotCityData } from '../../api/cityList'
+import { getCityData, getHotCityData, getHouseData } from '../../api/cityList'
 
 // 导入获取当前城市工具
 import { getCurrCity } from '../../utils/currentCity'
@@ -28,16 +28,31 @@ class index extends PureComponent {
 
   // 渲染展示数据列表
   renderList(){
-    console.log(this.state.orderIndex)
     return (
+      // 根据顺序渲染列表
       this.state.orderIndex.map((item, index) => {
         return (
           <List key={index} renderHeader={() => item} className="my-list">
+
+            {/* 渲染每一个字母所有城市 */}
             {this.state.showCityList[item].map(cityItem => {
               return (
                 <Item 
                   key={cityItem.value}
-                  onClick={()=> console.log(this)
+                  // 切换当前城市
+                  onClick={async ()=> {
+                    // 查询当前城市是否有房源
+                    const { data }= await getHouseData(cityItem.value)
+                    
+                    // 判断选择城市是否有房源
+                    if (data.body && data.body.length === 0) {
+                      return Toast.info('暂无房源', 1)
+                    }
+
+                    // 持久化本地存储
+                    localStorage.setItem('currentCity',JSON.stringify(cityItem))
+                    this.props.history.goBack()
+                  }
                   }
                   >
                     {cityItem.label}
@@ -89,8 +104,7 @@ class index extends PureComponent {
         : (showCityList[headLetter] = [item])
     })
     // 获取有序键数组
-    const orderIndex = Object.keys( showCityList ).sort((a,b) => a - b)
-
+    const orderIndex = Object.keys( showCityList ).sort((a,b) => a.localeCompare(b))
     // 添加热门城市到展示数据
     showCityList['Hot'] = hotCityList
     // 防止数组二次添加hot
@@ -98,6 +112,11 @@ class index extends PureComponent {
     
     // 获取当前城市
     getCurrCity( data => {
+
+      // 获取本地数据是否存储当前城市
+      const currentCityParams = JSON.parse(localStorage.getItem('currentCity'))
+      currentCityParams && (data = currentCityParams )
+
       // 添加热门城市到展示数据
       showCityList['#'] = [data]
       // 防止数组二次添加#

@@ -220,6 +220,11 @@ class index extends PureComponent {
     this.getGroups()
     this.getNews() 
     getCurrCity( data => {
+
+      // 获取本地数据是否存储当前城市
+      const currentCityParams = JSON.parse(localStorage.getItem('currentCity'))
+      currentCityParams && (data = currentCityParams )
+
       // 更新当前城市位置
       this.setState(()=>{
         return { 
