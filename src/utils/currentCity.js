@@ -1,11 +1,15 @@
-
+// 请求方法
 import { getCurrCityData } from '../api/home'
 
+// 导入持久化工具
+import { setCurrentCityStorage, getCurrentCityStorage } from '../utils/storage'
+
+// 组件
 import { Toast } from 'antd-mobile' 
 
 export const getCurrCity = ()=>{
   // 获取本地数据是否存储当前城市
-  let currentCityParams = JSON.parse(window.localStorage.getItem('currentCity'))
+  let currentCityParams = getCurrentCityStorage()
   if (!currentCityParams) {
     return new Promise((resolve, reject) => {
       // 获取百度地图当前位置
@@ -18,7 +22,7 @@ export const getCurrCity = ()=>{
         const { data } = await getCurrCityData(cityName)
 
         // 对当前城市进行本地存储
-        window.localStorage.setItem('currentCity',JSON.stringify(data.body))
+        setCurrentCityStorage(data.body)
 
         // 判断是否请求成功
         if (data.status !== 200) {

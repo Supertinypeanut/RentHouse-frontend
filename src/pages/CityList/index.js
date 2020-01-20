@@ -3,12 +3,13 @@ import React, { PureComponent } from 'react';
 // ant组件
 import { NavBar, Icon, List, Toast } from 'antd-mobile';
 
-
 // 导入api
 import { getCityData, getHotCityData, getHouseData } from '../../api/cityList'
 
 // 导入获取当前城市工具
 import { getCurrCity } from '../../utils/currentCity'
+import { setCurrentCityStorage } from '../../utils/storage'
+
 
 import './index.scss'
 
@@ -50,7 +51,7 @@ class index extends PureComponent {
                     }
 
                     // 持久化本地存储
-                    localStorage.setItem('currentCity',JSON.stringify(cityItem))
+                    setCurrentCityStorage(cityItem)
                     this.props.history.goBack()
                   }
                   }
