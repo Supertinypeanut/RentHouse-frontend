@@ -1,7 +1,8 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent } from 'react'
+import { AutoSizer, List } from 'react-virtualized'
 
 // ant组件
-import { NavBar, Icon, List, Toast } from 'antd-mobile';
+import { NavBar, Icon, Toast } from 'antd-mobile'
 
 // 导入api
 import { getCityData, getHotCityData, getHouseData } from '../../api/cityList'
@@ -10,10 +11,56 @@ import { getCityData, getHotCityData, getHouseData } from '../../api/cityList'
 import { getCurrCity } from '../../utils/currentCity'
 import { setCurrentCityStorage } from '../../utils/storage'
 
-
 import './index.scss'
 
-const Item = List.Item
+// const Item = List.Item
+
+// 列表数据
+const list = [
+  '----Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn',
+  'Brian Vaughn'
+];
 
 class index extends PureComponent {
   state = {
@@ -27,43 +74,57 @@ class index extends PureComponent {
     showCityList: {}
   }
 
+  rowRenderer({
+    key, // Unique key within array of rows
+    index, // Index of row within collection
+    isScrolling, // The List is currently being scrolled
+    isVisible, // This row is visible within the List (eg it is not an overscanned row)
+    style, // Style object to be applied to row (to position it)
+  }) {
+    return (
+      <div key={key} style={style}>
+        {list[index]}
+      </div>
+    );
+  }
+
   // 渲染展示数据列表
   renderList(){
-    return (
-      // 根据顺序渲染列表
-      this.state.orderIndex.map((item, index) => {
-        return (
-          <List key={index} renderHeader={() => item} className="my-list">
+    // return (
+    //   // 根据顺序渲染列表
+    //   this.state.orderIndex.map((item, index) => {
+    //     return (
+    //       <List key={index} renderHeader={() => item} className="my-list">
 
-            {/* 渲染每一个字母所有城市 */}
-            {this.state.showCityList[item].map(cityItem => {
-              return (
-                <Item 
-                  key={cityItem.value}
-                  // 切换当前城市
-                  onClick={async ()=> {
-                    // 查询当前城市是否有房源
-                    const { data }= await getHouseData(cityItem.value)
+    //         {/* 渲染每一个字母所有城市 */}
+    //         {this.state.showCityList[item].map(cityItem => {
+    //           return (
+    //             <Item 
+    //               key={cityItem.value}
+    //               // 切换当前城市
+    //               onClick={async ()=> {
+    //                 // 查询当前城市是否有房源
+    //                 const { data }= await getHouseData(cityItem.value)
                     
-                    // 判断选择城市是否有房源
-                    if (data.body && data.body.length === 0) {
-                      return Toast.info('暂无房源', 1)
-                    }
+    //                 // 判断选择城市是否有房源
+    //                 if (data.body && data.body.length === 0) {
+    //                   return Toast.info('暂无房源', 1)
+    //                 }
 
-                    // 持久化本地存储
-                    setCurrentCityStorage(cityItem)
-                    this.props.history.goBack()
-                  }
-                  }
-                  >
-                    {cityItem.label}
-                </Item>
-              )
-            })}
-          </List>
-        )
-      })
-    )
+    //                 // 持久化本地存储
+    //                 setCurrentCityStorage(cityItem)
+    //                 this.props.history.goBack()
+    //               }
+    //               }
+    //               >
+    //                 {cityItem.label}
+    //             </Item>
+    //           )
+    //         })}
+    //       </List>
+    //     )
+    //   })
+    // )
   }
 
   // 获取城市列表数据
@@ -136,6 +197,7 @@ class index extends PureComponent {
       <>
         {/* 导航栏 */}
         <NavBar
+          className="narBar"
           mode="light"
           icon={<Icon type="left" />}
           onLeftClick={() => this.props.history.goBack()
@@ -143,7 +205,18 @@ class index extends PureComponent {
         >城市列表</NavBar>
 
         {/* 列表 */}
-        {this.renderList()}
+        {/* {this.renderList()} */}
+        <AutoSizer>
+          {({height, width}) => (
+            <List
+              width={width}
+              height={height}
+              rowCount={list.length}
+              rowHeight={90}
+              rowRenderer={this.rowRenderer}
+            />
+          )}
+        </AutoSizer>
       </>
     );
   }
