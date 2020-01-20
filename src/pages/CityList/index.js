@@ -92,7 +92,7 @@ class index extends PureComponent {
   }
 
   // 处理数据
-  compileCityList(){
+  async compileCityList(){
     const { cityList, showCityList, hotCityList } = this.state
     // 遍历城市列表
     cityList.forEach( item => {
@@ -111,24 +111,17 @@ class index extends PureComponent {
     orderIndex.includes('Hot') || orderIndex.unshift('Hot')
     
     // 获取当前城市
-    getCurrCity( data => {
-
-      // 获取本地数据是否存储当前城市
-      const currentCityParams = JSON.parse(localStorage.getItem('currentCity'))
-      currentCityParams && (data = currentCityParams )
-
-      // 添加热门城市到展示数据
-      showCityList['#'] = [data]
-      // 防止数组二次添加#
-      orderIndex.includes('#') || orderIndex.unshift('#')
-
-      // 更新容器中展示数据
-      this.setState(()=>{
-        return { 
-          showCityList,
-          orderIndex
-        }
-      })
+    const data = await getCurrCity()
+    // 添加热门城市到展示数据
+    showCityList['#'] = [data]
+    // 防止数组二次添加#
+    orderIndex.includes('#') || orderIndex.unshift('#')
+    // 更新容器中展示数据
+    this.setState(()=>{
+      return { 
+        showCityList,
+        orderIndex
+      }
     })
   }
 

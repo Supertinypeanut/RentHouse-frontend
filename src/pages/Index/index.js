@@ -214,27 +214,26 @@ class index extends PureComponent {
     })
   }
 
+  // 获取当前城市
+  async getCurrenCityInfo(){
+    const data = await getCurrCity()
+    // 更新当前城市位置
+    this.setState(()=>{
+      return { 
+        currCityInfo:{ 
+          label: data.label,
+          value: data.value
+        }
+      }
+    })
+  }
+
   // 节点挂载，进行状态修改，和数据请求操作
   componentDidMount(){
     this.getSwiper()
     this.getGroups()
     this.getNews() 
-    getCurrCity( data => {
-
-      // 获取本地数据是否存储当前城市
-      const currentCityParams = JSON.parse(localStorage.getItem('currentCity'))
-      currentCityParams && (data = currentCityParams )
-
-      // 更新当前城市位置
-      this.setState(()=>{
-        return { 
-          currCityInfo:{ 
-            label: data.label,
-            value: data.value
-          }
-        }
-      })
-    })
+    this.getCurrenCityInfo()
   }
 
   render() {
