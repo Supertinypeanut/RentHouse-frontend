@@ -42,6 +42,20 @@ class index extends PureComponent {
         <div className="title">{ orderIndex[index] }</div>
         {showCityList[orderIndex[index]].map( cityItem => 
           <div className="name" key={cityItem.value} 
+            // 切换当前城市
+            onClick={async ()=> {
+              // 查询当前城市是否有房源
+              const { data }= await getHouseData(cityItem.value)
+              
+              // 判断选择城市是否有房源
+              if (data.body && data.body.length === 0) {
+                return Toast.info('暂无房源', 1)
+              }
+              // 持久化本地存储
+              setCurrentCityStorage(cityItem)
+              this.props.history.goBack()
+            }
+            }
           >{cityItem.label}</div>
         )}
       </div>
