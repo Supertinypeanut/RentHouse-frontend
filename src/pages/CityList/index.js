@@ -62,46 +62,6 @@ class index extends PureComponent {
     )
   }
 
-  // 渲染展示数据列表
-  // renderList(){
-  //   return ( 
-  //     // 根据顺序渲染列表
-  //     this.state.orderIndex.map((item, index) => {
-  //       return (
-  //         <List key={index} renderHeader={() => item} className="my-list">
-
-  //           {/* 渲染每一个字母所有城市 */}
-  //           {this.state.showCityList[item].map(cityItem => {
-  //             return (
-  //               <Item 
-  //                 key={cityItem.value}
-  //                 // 切换当前城市
-  //                 onClick={async ()=> {
-  //                   // 查询当前城市是否有房源
-  //                   const { data }= await getHouseData(cityItem.value)
-                    
-  //                   // 判断选择城市是否有房源
-  //                   if (data.body && data.body.length === 0) {
-  //                     return Toast.info('暂无房源', 1)
-  //                   }
-
-  //                   // 持久化本地存储
-  //                   setCurrentCityStorage(cityItem)
-  //                   this.props.history.goBack()
-  //                 }
-  //                 }
-  //                 >
-  //                   {cityItem.label}
-  //               </Item>
-  //             )
-  //           })}
-  //         </List>
-  //       )
-  //     })
-  //   )
-  // }
-
-
   // 当个元素高度
   renderItemHeight = ({ index }) =>{
     const { showCityList, orderIndex } = this.state
