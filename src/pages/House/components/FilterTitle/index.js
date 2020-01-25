@@ -3,6 +3,7 @@ import React from 'react'
 import { Flex } from 'antd-mobile'
 
 import styles from './index.module.css'
+// import Item from 'antd-mobile/lib/popover/Item'
 
 // 条件筛选栏标题数组：
 const titleList = [
@@ -12,16 +13,25 @@ const titleList = [
   { title: '筛选', type: 'more' }
 ]
 
-export default function FilterTitle() {
+export default function FilterTitle(props) {
+  console.log(props)
+  
+  // 获取父组件状态数据
+  const { titleSelectStatus }  = props
   return (
     <Flex align="center" className={styles.root}>
-      <Flex.Item>
-        {/* 选中类名： selected */}
-        <span className={[styles.dropdown, styles.selected].join(' ')}>
-          <span>区域</span>
-          <i className="iconfont icon-arrow" />
-        </span>
-      </Flex.Item>
+      {titleList.map( Item => (
+        <Flex.Item key={Item.type}>
+          {/* 选中类名： selected */}
+          <span className={[
+            styles.dropdown,
+            titleSelectStatus[Item.type] ? styles.selected : ''
+            ].join(' ')}>
+            <span>{Item.title}</span>
+            <i className="iconfont icon-arrow" />
+          </span>
+        </Flex.Item>
+      ) )}
     </Flex>
   )
 }
