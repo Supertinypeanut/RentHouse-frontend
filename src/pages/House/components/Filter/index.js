@@ -16,8 +16,21 @@ const titleSelectStatus = {
 export default class Filter extends Component {
   state = {
     // 标题选中状态数据
-    titleSelectStatus
+    titleSelectStatus,
+    // picker选择器前三个
+    openType : ''
   }
+
+  // 更改筛选标题状态
+  changeSelectStatus = (type) => {
+    this.setState(() => {
+      return {
+        titleSelectStatus : { ...this.state.titleSelectStatus, [type] : true },
+        openType : type
+      }
+    })
+  }
+
   render() {
     return (
       <div className={styles.root}>
@@ -26,10 +39,15 @@ export default class Filter extends Component {
 
         <div className={styles.content}>
           {/* 标题栏 */}
-          <FilterTitle titleSelectStatus = {this.state.titleSelectStatus}/>
+          <FilterTitle 
+            titleSelectStatus = {this.state.titleSelectStatus} 
+            changeSelectStatus = {this.changeSelectStatus}
+          />
 
           {/* 前三个菜单对应的内容： */}
-          {/* <FilterPicker /> */}
+         { (this.state.openType === 'area' ||
+            this.state.openType === 'mode' ||
+            this.state.openType === 'price') &&  <FilterPicker /> }
 
           {/* 最后一个菜单对应的内容： */}
           {/* <FilterMore /> */}
