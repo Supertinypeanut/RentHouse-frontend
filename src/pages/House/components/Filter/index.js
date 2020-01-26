@@ -31,11 +31,52 @@ export default class Filter extends Component {
     })
   }
 
+  // 取消前三个筛选，隐藏picker
+  onCancelPicker = () => {
+    this.setState(() => {
+      return {
+        openType : ''
+      }
+    })
+  }
+
+
+  // 保存筛选
+  onSavePicker = () => {
+    this.setState(() => {
+      return {
+        openType : ''
+      }
+    })
+  }
+
+
+  // 取消前三个筛选，隐藏picker
+  onCancelPicker = () => {
+    this.setState(() => {
+      return {
+        openType : ''
+      }
+    })
+  }
+
+  // 判断是否是点击前三个按扭
+  openShow = () => {
+    return (
+      this.state.openType === 'area' ||
+      this.state.openType === 'mode' ||
+      this.state.openType === 'price'
+    )
+  }
+
   render() {
     return (
       <div className={styles.root}>
         {/* 前三个菜单的遮罩层 */}
-        {/* <div className={styles.mask} /> */}
+        { this.openShow() && 
+          <div onClick = { this.onCancelPicker } 
+          className={styles.mask} />
+        }
 
         <div className={styles.content}>
           {/* 标题栏 */}
@@ -44,10 +85,9 @@ export default class Filter extends Component {
             changeSelectStatus = {this.changeSelectStatus}
           />
 
-          {/* 前三个菜单对应的内容： */}
-         { (this.state.openType === 'area' ||
-            this.state.openType === 'mode' ||
-            this.state.openType === 'price') &&  <FilterPicker /> }
+        {/* 前三个菜单对应的内容： */}
+        { this.openShow() &&  
+            <FilterPicker onCancelPicker ={ this.onCancelPicker } onSavePicker = { this.onSavePicker }/> }
 
           {/* 最后一个菜单对应的内容： */}
           {/* <FilterMore /> */}

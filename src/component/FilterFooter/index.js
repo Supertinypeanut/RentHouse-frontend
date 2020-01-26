@@ -5,14 +5,20 @@ import { Flex } from 'antd-mobile'
 
 import styles from './index.module.css'
 
-function FilterFooter({ className, style }) {
+function FilterFooter({ className, style, onCancelPicker, onSavePicker }) {
   return (
     <Flex style={style} className={[styles.root, className || ''].join(' ')}>
       {/* 取消按钮 */}
-      <span className={[styles.btn, styles.cancel].join(' ')}>取消</span>
+      <span 
+        className={[styles.btn, styles.cancel].join(' ')}
+        onClick = { onCancelPicker }
+      >取消</span>
 
       {/* 确定按钮 */}
-      <span className={[styles.btn, styles.ok].join(' ')}>确定</span>
+      <span 
+        className={[styles.btn, styles.ok].join(' ')}
+        onClick = { onSavePicker }
+      >确定</span>
     </Flex>
   )
 }
