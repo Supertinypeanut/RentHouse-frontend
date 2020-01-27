@@ -9,14 +9,6 @@ import { getHouseConditionData } from '../../../../api/house';
 
 import styles from './index.module.css'
 
-// 标题选中状态
-const titleSelectStatus = {
-  area : true,
-  mode : false,
-  price : false,
-  more : false
-}
-
 // 选中的房屋条件数据
 const selectCondition = {
   area : null,
@@ -30,8 +22,6 @@ let currentCondition = null
 
 export default class Filter extends Component {
   state = {
-    // 标题选中状态数据
-    titleSelectStatus,
     // 当前筛选方式类型
     openType : '',
     // 房屋查询条件
@@ -44,7 +34,6 @@ export default class Filter extends Component {
   changeSelectStatus = (type) => {
     this.setState(() => {
       return {
-        titleSelectStatus : { ...this.state.titleSelectStatus, [type] : true },
         openType : type
       }
     })
@@ -137,7 +126,7 @@ export default class Filter extends Component {
         <div className={styles.content}>
           {/* 标题栏 */}
           <FilterTitle 
-            titleSelectStatus = {this.state.titleSelectStatus} 
+            selectCondition = {this.state.selectCondition} 
             changeSelectStatus = {this.changeSelectStatus}
           />
 

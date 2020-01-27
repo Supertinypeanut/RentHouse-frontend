@@ -15,7 +15,7 @@ const titleList = [
 
 export default function FilterTitle(props) {
   // 获取父组件状态数据
-  const { titleSelectStatus, changeSelectStatus }  = props
+  const { selectCondition, changeSelectStatus }  = props
 
   return (
     <Flex align="center" className={styles.root}>
@@ -25,7 +25,10 @@ export default function FilterTitle(props) {
           <span 
             className={[
             styles.dropdown,
-            titleSelectStatus[Item.type]? styles.selected : ''
+            selectCondition[Item.type] 
+              && (selectCondition[Item.type].toString() === "area,null"
+              || selectCondition[Item.type].toString() === "null")
+              ?  '' : styles.selected 
             ].join(' ')}
             // 点击更改选中结果
             onClick = { () => changeSelectStatus(Item.type) }
