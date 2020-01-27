@@ -25,7 +25,7 @@ export default function FilterTitle(props) {
           <span 
             className={[
             styles.dropdown,
-            titleSelectStatus[Item.type] ? styles.selected : ''
+            titleSelectStatus[Item.type]? styles.selected : ''
             ].join(' ')}
             // 点击更改选中结果
             onClick = { () => changeSelectStatus(Item.type) }
