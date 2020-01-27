@@ -4,8 +4,12 @@ import FilterTitle from '../FilterTitle'
 import FilterPicker from '../FilterPicker'
 import FilterMore from '../FilterMore'
 
+// 请求api
+import { getHouseConditionData } from '../../../../api/house';
+
 import styles from './index.module.css'
 
+// 标题选中状态
 const titleSelectStatus = {
   area : true,
   mode : false,
@@ -18,7 +22,9 @@ export default class Filter extends Component {
     // 标题选中状态数据
     titleSelectStatus,
     // picker选择器前三个
-    openType : ''
+    openType : '',
+    // 房屋查询条件
+    condition : null
   }
 
   // 更改筛选标题状态
@@ -40,19 +46,8 @@ export default class Filter extends Component {
     })
   }
 
-
   // 保存筛选
   onSavePicker = () => {
-    this.setState(() => {
-      return {
-        openType : ''
-      }
-    })
-  }
-
-
-  // 取消前三个筛选，隐藏picker
-  onCancelPicker = () => {
     this.setState(() => {
       return {
         openType : ''
@@ -67,6 +62,47 @@ export default class Filter extends Component {
       this.state.openType === 'mode' ||
       this.state.openType === 'price'
     )
+  }
+
+  // 处理筛选数据
+  handleConditionData(){
+    const { condition:{area, subway, rentType, price}, openType } = this.state
+    // 返回的处理数据
+    let data
+    // 列数
+    let cols = 1
+    switch (openType) {
+      case 'area':
+        data = [area, subway]
+        cols = 3
+        break;
+      case 'mode':
+        data = rentType
+        break;
+      case 'price':
+        data = price
+        break;
+      default:
+        break;
+    }
+    return {data, cols}
+  }
+
+  // 获取房屋查询条件
+  async getHouseCondition(){
+    // 发送请求获取数据
+    const {data} = await getHouseConditionData()
+    // 更改状态数据
+    this.setState(()=>{
+      return {
+        condition: data.body
+      }
+    })
+  }
+
+  componentDidMount(){
+    // 调用获取房屋查询条件
+    this.getHouseCondition()
   }
 
   render() {
@@ -85,9 +121,14 @@ export default class Filter extends Component {
             changeSelectStatus = {this.changeSelectStatus}
           />
 
-        {/* 前三个菜单对应的内容： */}
-        { this.openShow() &&  
-            <FilterPicker onCancelPicker ={ this.onCancelPicker } onSavePicker = { this.onSavePicker }/> }
+          {/* 前三个菜单对应的内容： */}
+          { this.openShow() &&  
+            <FilterPicker 
+              onCancelPicker = { this.onCancelPicker }
+              onSavePicker = { this.onSavePicker }
+              data = { this.handleConditionData() }
+            /> 
+          }
 
           {/* 最后一个菜单对应的内容： */}
           {/* <FilterMore /> */}
