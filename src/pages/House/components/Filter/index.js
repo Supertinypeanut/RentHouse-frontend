@@ -11,10 +11,10 @@ import styles from './index.module.css'
 
 // 选中的房屋条件数据
 const selectCondition = {
-  area : null,
-  mode : null,
-  price : null,
-  more : null
+  area : ["area", "null"],
+  mode : ["null"],
+  price : ["null"],
+  more : ["null"]
 }
 
 // 当前停留的房屋数据
@@ -75,7 +75,7 @@ export default class Filter extends Component {
 
   // 处理筛选数据
   handleConditionData(){
-    const { condition:{area, subway, rentType, price}, openType } = this.state
+    const { condition:{area, subway, rentType, price, characteristic, floor, oriented, roomType}, openType } = this.state
     // 返回的处理数据
     let data
     // 列数
@@ -90,6 +90,9 @@ export default class Filter extends Component {
         break;
       case 'price':
         data = price
+        break;
+      case 'more':
+        data = { characteristic, floor, oriented, roomType}
         break;
       default:
         break;
@@ -132,7 +135,7 @@ export default class Filter extends Component {
 
           {/* 前三个菜单对应的内容： */}
           { this.openShow() &&  
-            <FilterPicker 
+            <FilterPicker
               onCancelPicker = { this.onCancelPicker }
               onSavePicker = { this.onSavePicker }
               data = { this.handleConditionData() }
@@ -142,7 +145,7 @@ export default class Filter extends Component {
           }
 
           {/* 最后一个菜单对应的内容： */}
-          {/* <FilterMore /> */}
+          { this.state.openType === 'more' && <FilterMore data = { this.handleConditionData() }/> }
         </div>
       </div>
     )
