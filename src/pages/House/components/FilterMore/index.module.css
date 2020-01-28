@@ -55,6 +55,7 @@
 .dd {
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 14px;
+  margin: 0;
 }
 
 .dd:last-child {

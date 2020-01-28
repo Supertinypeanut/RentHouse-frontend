@@ -18,7 +18,7 @@ const selectCondition = {
 }
 
 // 当前停留的房屋数据
-let currentCondition = null
+let currentCondition = ["null"]
 
 export default class Filter extends Component {
   state = {
@@ -50,7 +50,8 @@ export default class Filter extends Component {
       return {
         openType : ''
       }
-    })
+      // 清除当前选中信息
+    }, () => currentCondition = ["null"] )
   }
 
   // 保存筛选
@@ -61,7 +62,8 @@ export default class Filter extends Component {
         openType : '',
         selectCondition : { ...selectCondition,[ openType]: currentCondition }
       }
-    })
+      // 清除当前选中信息
+    },() => currentCondition = ["null"])
   }
 
   // 判断是否是点击前三个按扭
@@ -75,7 +77,9 @@ export default class Filter extends Component {
 
   // 处理筛选数据
   handleConditionData(){
-    const { condition:{area, subway, rentType, price, characteristic, floor, oriented, roomType}, openType } = this.state
+    const { condition:{ area, subway, rentType, price, characteristic, floor, oriented, roomType},
+            openType
+          } = this.state
     // 返回的处理数据
     let data
     // 列数
@@ -145,7 +149,15 @@ export default class Filter extends Component {
           }
 
           {/* 最后一个菜单对应的内容： */}
-          { this.state.openType === 'more' && <FilterMore data = { this.handleConditionData() }/> }
+          { this.state.openType === 'more' && 
+              <FilterMore 
+                moreConditionData = { this.handleConditionData() }
+                onCancelPicker = { this.onCancelPicker }
+                onSavePicker = { this.onSavePicker }
+                onGetCurrentCondition = { this.onGetCurrentCondition }
+                selectCondition = { this.state.selectCondition['more'] }
+              />
+          }
         </div>
       </div>
     )

@@ -5,24 +5,62 @@ import FilterFooter from '../../../../component/FilterFooter'
 import styles from './index.module.css'
 
 export default class FilterMore extends Component {
+  state = {
+    // 选中筛选条件
+    defaultSelectCondition : this.props.selectCondition
+  }
+
+  // 点击选中的条件
+  onSelectCondition( value ){
+    let { defaultSelectCondition } = this.state
+    console.log(value)
+    // 判断当前点击的筛选条件是否选中(我)
+    this.judgmentConditionExist( value ) 
+      ? defaultSelectCondition.splice(defaultSelectCondition.indexOf(value), 1)
+      : defaultSelectCondition = [...defaultSelectCondition, value]
+
+    console.log(defaultSelectCondition)
+    // 更新选中筛选条件
+    this.setState( ()=>{
+      return {
+        // 去重，防止用户点击同一个
+        defaultSelectCondition
+      }
+    })
+  }
+
+  // 判断筛选条件是否存在
+  judgmentConditionExist(value){
+    return this.state.defaultSelectCondition.includes(value)
+  }
+
   // 渲染标签
   renderFilters( data ) {
     // 高亮类名： styles.tagActive
     return (
-
+      // 渲染对应房屋筛选列表
       data.map( item => 
-      <span className={[styles.tag, styles.tagActive].join(' ')} key = { item.value }>{ item.label }</span>
+      <span 
+        className={[styles.tag, 
+                    this.judgmentConditionExist(item.value) ? styles.tagActive : '' ].join(' ')}
+        key = { item.value }
+        onClick = { () => { this.onSelectCondition(item.value) } }
+      >
+        { item.label }
+      </span>
       )
     )
   }
 
   render() {
+    const { onCancelPicker, onSavePicker, moreConditionData, onGetCurrentCondition } = this.props
     // 父组件传更多筛选条件
-    const { characteristic, floor, oriented, roomType } = this.props.data
+    const { characteristic, floor, oriented, roomType } = moreConditionData.data
+
     return (
       <div className={styles.root}>
         {/* 遮罩层 */}
-        <div className={styles.mask} />
+        <div onClick = { () => onCancelPicker() } className={styles.mask} />
 
         {/* 条件内容 */}
         <div className={styles.tags}>
@@ -42,7 +80,15 @@ export default class FilterMore extends Component {
         </div>
 
         {/* 底部按钮 */}
-        <FilterFooter className={styles.footer} />
+        <FilterFooter 
+          className={styles.footer} 
+          onCancelPicker = { onCancelPicker }
+          onSavePicker = { () => {
+            // 更新父组件的当前筛选条件
+            onGetCurrentCondition( this.state.defaultSelectCondition.slice(1) )
+            onSavePicker()
+          } }
+        />
       </div>
     )
   }
