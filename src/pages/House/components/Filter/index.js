@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import FilterTitle from '../FilterTitle'
 import FilterPicker from '../FilterPicker'
 import FilterMore from '../FilterMore'
-
+import HouseItem from '../HouseItem'
 // 请求api
 import { getHouseConditionData, getHouseData } from '../../../../api/house';
 
@@ -32,7 +32,9 @@ export default class Filter extends Component {
     // 已选房屋查询条件
     selectCondition,
     // 筛选条件请求返回数据
-    huoseData: []
+    huoseData: [],
+    // 返回房屋数
+    count : 0
   }
 
   // 更改筛选标题状态
@@ -67,8 +69,15 @@ export default class Filter extends Component {
         openType : '',
         selectCondition : { ...selectCondition,[ openType]: currentCondition }
       }
+    },() => {
+      // 重置开始项和结束项
+      start = 1
+      end = 20
+      // 获取房屋数据
+      this.getHouse()
       // 清除当前选中信息
-    },() => currentCondition = ["null"])
+      currentCondition = ["null"]
+    })
   }
 
   // 判断是否是点击前三个按扭
@@ -150,8 +159,13 @@ export default class Filter extends Component {
     // 更新房屋数据
     this.setState(() => {
       return {
-        huoseData: [...this.state.huoseData, ...body.list]
+        huoseData: body.list,
+        count : body.count
       }
+    }, () => {
+      const { count, huoseData } = this.state
+      // 给父组件传递房屋列表数据
+      this.props.getChildrenComponentData({count, huoseData})
     })
   }
 
