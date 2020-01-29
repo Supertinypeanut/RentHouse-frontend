@@ -5,20 +5,23 @@ import FilterPicker from '../FilterPicker'
 import FilterMore from '../FilterMore'
 
 // 请求api
-import { getHouseConditionData } from '../../../../api/house';
+import { getHouseConditionData, getHouseData } from '../../../../api/house';
 
 import styles from './index.module.css'
 
 // 选中的房屋条件数据
 const selectCondition = {
-  area : ["area", "null"],
-  mode : ["null"],
-  price : ["null"],
-  more : ["null"]
+  area: ["area", "null"],
+  mode: ["null"],
+  price: ["null"],
+  more: ["null"]
 }
 
 // 当前停留的房屋数据
 let currentCondition = ["null"]
+
+// 查询房源开始项和结束项
+let start = 1, end = 20
 
 export default class Filter extends Component {
   state = {
@@ -27,7 +30,9 @@ export default class Filter extends Component {
     // 房屋查询条件
     condition : null,
     // 已选房屋查询条件
-    selectCondition
+    selectCondition,
+    // 筛选条件请求返回数据
+    huoseData: []
   }
 
   // 更改筛选标题状态
@@ -104,6 +109,24 @@ export default class Filter extends Component {
     return {data, cols, openType}
   }
 
+  // 处理请求筛选条件
+  handleRequestCondition(){
+    // 获取当地城市id
+    const { value } = this.props.CurrentCityData
+    // 获取选择条件
+    const { selectCondition } = this.state
+    let { area, mode, price, more } = selectCondition
+
+    // 处理更多筛选查询条件
+    area = area.slice(-1).join()
+    mode = mode.slice(-1).join()
+    price = price.slice(-1).join()
+    more = more.join()
+
+    // 返回条件请求对象
+    return { cityId: value, area, mode, price, more, start, end }
+  }
+
   // 获取房屋查询条件
   async getHouseCondition(){
     // 发送请求获取数据
@@ -116,9 +139,27 @@ export default class Filter extends Component {
     })
   }
 
+  // 根据条件查询房屋
+  async getHouse(){
+    // 调用请求参数处理
+    const params = this.handleRequestCondition()
+
+    // 发送参数请求
+    const { data:{ body } } = await getHouseData(params)
+
+    // 更新房屋数据
+    this.setState(() => {
+      return {
+        huoseData: [...this.state.huoseData, ...body.list]
+      }
+    })
+  }
+
   componentDidMount(){
     // 调用获取房屋查询条件
     this.getHouseCondition()
+    // 调用获取房屋信息
+    this.getHouse()
   }
 
   render() {

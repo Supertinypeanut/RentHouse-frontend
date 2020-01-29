@@ -13,7 +13,6 @@ export default class FilterMore extends Component {
   // 点击选中的条件
   onSelectCondition( value ){
     let { defaultSelectCondition } = this.state
-    console.log(value)
     // 判断当前点击的筛选条件是否选中(我)
     this.judgmentConditionExist( value ) 
       ? defaultSelectCondition.splice(defaultSelectCondition.indexOf(value), 1)

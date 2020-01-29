@@ -9,14 +9,14 @@ import styles from './index.module.css'
 import { getCurrentCityStorage } from '../../utils/storage'
 
 // 获取当前定位城市信息
-const { label } = getCurrentCityStorage()
+const CurrentCityData = getCurrentCityStorage()
 
 export default class HouseList extends React.Component {
   render() {
     return (
       <div className={styles.root}>
         {/* 条件筛选栏 */}
-        <Filter />
+        <Filter CurrentCityData = { CurrentCityData } />
       </div>
     )
   }
