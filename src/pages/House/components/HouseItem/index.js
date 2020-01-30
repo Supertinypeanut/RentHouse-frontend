@@ -8,11 +8,7 @@ import PropTypes from 'prop-types'
 
 import styles from './index.module.css'
 
-function HouseItem(props) {
-  if (!props.data) {
-    return <></>
-  }
-  const { houseImg, title, tags, price, desc, onClick } = props.data
+function HouseItem({ houseImg, title, tags, price, desc, onClick, style }) {
   return (
     <div className={styles.house} onClick={onClick} style={style}>
       <div className={styles.imgWrap}>

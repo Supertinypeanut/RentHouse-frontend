@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 // 导入列表组件
-import { AutoSizer, List } from "react-virtualized"
+import { AutoSizer, List, WindowScroller } from "react-virtualized"
 
 import FilterTitle from '../FilterTitle'
 import FilterPicker from '../FilterPicker'
@@ -25,6 +25,8 @@ let currentCondition = ["null"]
 
 // 查询房源开始项和结束项
 let start = 1, end = 20
+// 屏幕高
+const clientHeight = document.documentElement.clientHeight
 
 export default class Filter extends Component {
   state = {
@@ -37,7 +39,9 @@ export default class Filter extends Component {
     // 筛选条件请求返回数据
     huoseData: [],
     // 返回房屋数
-    count : 0
+    count : 0,
+    // 当前房屋数据是否请求成功
+    requestCurrentHouse : true
   }
 
   // 更改筛选标题状态
@@ -164,7 +168,8 @@ export default class Filter extends Component {
     this.setState(() => {
       return {
         huoseData: [ ...this.state.huoseData, ...body.list ],
-        count : body.count
+        count : body.count,
+        requestCurrentHouse: true
       }
     })
   }
@@ -172,12 +177,22 @@ export default class Filter extends Component {
   // 上拉加载
   onScroll = ( data ) => {
     const { scrollHeight, scrollTop } = data
-    console.log(scrollHeight, scrollTop)
     // 当快接近底部时，发送请求获取下一页数据
-    if (scrollTop > 300 && end < this.state.count) {
+    console.log(scrollHeight , scrollTop , clientHeight)
+    if ( scrollHeight < scrollTop + clientHeight + 300 
+          && end < this.state.count 
+          && this.state.requestCurrentHouse) {
       // 更改起始项和结束项
       start += 20
       end += 20
+
+      // 修改请求状态
+      this.setState(() =>{
+        return {
+          requestCurrentHouse : false
+        }
+      })
+
       // 发送请求
       this.getHouse()
     }
@@ -191,10 +206,10 @@ export default class Filter extends Component {
   }
 
   // 渲染数据列表
-  renderHouseItem = ( { index, key } ) => {
+  renderHouseItem = ( { index, key, style } ) => {
     // 获取数据
     const { huoseData } = this.state
-    return <HouseItem key = { key } data = { huoseData[index] } />
+    return <HouseItem key = { key } style = { style } { ...huoseData[index] } />
   }
 
   render() {
@@ -239,20 +254,25 @@ export default class Filter extends Component {
         </div>
 
         {/* 数据列表 */}
-         <AutoSizer>
-          {({ width }) => {
-            return (
-              <List
-                height = { document.documentElement.clientHeight }
-                width = { width }
-                rowCount = { this.state.huoseData.length }
-                rowHeight = { 140 }
-                rowRenderer = { this.renderHouseItem }
-                onScroll = { this.onScroll }
-              />
-            )
-          }}
-        </AutoSizer>
+        <WindowScroller>
+          { ({height, isScrolling, scrollTop}) => (
+            <AutoSizer>
+             {({ width }) => (
+               <List
+                  autoHeight
+                  height = { clientHeight }
+                  width = { width }
+                  rowCount = { this.state.huoseData.length}
+                  rowHeight = { 140 }
+                  rowRenderer = { this.renderHouseItem }
+                  onScroll = { this.onScroll }
+                  isScrolling={isScrolling}
+                  scrollTop={scrollTop}
+               />
+             )}
+            </AutoSizer>
+          )}
+        </WindowScroller>
       </>      
     )
   }
