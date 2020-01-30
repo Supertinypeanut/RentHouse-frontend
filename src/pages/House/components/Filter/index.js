@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 
+// 导入列表组件
+import { AutoSizer, List } from "react-virtualized"
+
 import FilterTitle from '../FilterTitle'
 import FilterPicker from '../FilterPicker'
 import FilterMore from '../FilterMore'
@@ -67,7 +70,8 @@ export default class Filter extends Component {
     this.setState(() => {
       return {
         openType : '',
-        selectCondition : { ...selectCondition,[ openType]: currentCondition }
+        selectCondition : { ...selectCondition,[ openType]: currentCondition },
+        huoseData: []
       }
     },() => {
       // 重置开始项和结束项
@@ -159,14 +163,24 @@ export default class Filter extends Component {
     // 更新房屋数据
     this.setState(() => {
       return {
-        huoseData: body.list,
+        huoseData: [ ...this.state.huoseData, ...body.list ],
         count : body.count
       }
-    }, () => {
-      const { count, huoseData } = this.state
-      // 给父组件传递房屋列表数据
-      this.props.getChildrenComponentData({count, huoseData})
     })
+  }
+
+  // 上拉加载
+  onScroll = ( data ) => {
+    const { scrollHeight, scrollTop } = data
+    console.log(scrollHeight, scrollTop)
+    // 当快接近底部时，发送请求获取下一页数据
+    if (scrollTop > 300 && end < this.state.count) {
+      // 更改起始项和结束项
+      start += 20
+      end += 20
+      // 发送请求
+      this.getHouse()
+    }
   }
 
   componentDidMount(){
@@ -176,45 +190,70 @@ export default class Filter extends Component {
     this.getHouse()
   }
 
+  // 渲染数据列表
+  renderHouseItem = ( { index, key } ) => {
+    // 获取数据
+    const { huoseData } = this.state
+    return <HouseItem key = { key } data = { huoseData[index] } />
+  }
+
   render() {
     return (
-      <div className={styles.root}>
-        {/* 前三个菜单的遮罩层 */}
-        { this.openShow() && 
-          <div onClick = { this.onCancelPicker } 
-          className={styles.mask} />
-        }
-
-        <div className={styles.content}>
-          {/* 标题栏 */}
-          <FilterTitle 
-            selectCondition = {this.state.selectCondition} 
-            changeSelectStatus = {this.changeSelectStatus}
-          />
-
-          {/* 前三个菜单对应的内容： */}
-          { this.openShow() &&  
-            <FilterPicker
-              onCancelPicker = { this.onCancelPicker }
-              onSavePicker = { this.onSavePicker }
-              data = { this.handleConditionData() }
-              selectCondition = { this.state.selectCondition }
-              onGetCurrentCondition = { this.onGetCurrentCondition }
-            /> 
+      <>
+        <div className={styles.root}>
+          {/* 前三个菜单的遮罩层 */}
+          { this.openShow() && 
+            <div onClick = { this.onCancelPicker } 
+            className={styles.mask} />
           }
-
-          {/* 最后一个菜单对应的内容： */}
-          { this.state.openType === 'more' && 
-              <FilterMore 
-                moreConditionData = { this.handleConditionData() }
+  
+          <div className={styles.content}>
+            {/* 标题栏 */}
+            <FilterTitle 
+              selectCondition = {this.state.selectCondition} 
+              changeSelectStatus = {this.changeSelectStatus}
+            />
+  
+            {/* 前三个菜单对应的内容： */}
+            { this.openShow() &&  
+              <FilterPicker
                 onCancelPicker = { this.onCancelPicker }
                 onSavePicker = { this.onSavePicker }
+                data = { this.handleConditionData() }
+                selectCondition = { this.state.selectCondition }
                 onGetCurrentCondition = { this.onGetCurrentCondition }
-                selectCondition = { this.state.selectCondition['more'] }
-              />
-          }
+              /> 
+            }
+  
+            {/* 最后一个菜单对应的内容： */}
+            { this.state.openType === 'more' && 
+                <FilterMore 
+                  moreConditionData = { this.handleConditionData() }
+                  onCancelPicker = { this.onCancelPicker }
+                  onSavePicker = { this.onSavePicker }
+                  onGetCurrentCondition = { this.onGetCurrentCondition }
+                  selectCondition = { this.state.selectCondition['more'] }
+                />
+            }
+          </div>
         </div>
-      </div>
+
+        {/* 数据列表 */}
+         <AutoSizer>
+          {({ width }) => {
+            return (
+              <List
+                height = { document.documentElement.clientHeight }
+                width = { width }
+                rowCount = { this.state.huoseData.length }
+                rowHeight = { 140 }
+                rowRenderer = { this.renderHouseItem }
+                onScroll = { this.onScroll }
+              />
+            )
+          }}
+        </AutoSizer>
+      </>      
     )
   }
 }
