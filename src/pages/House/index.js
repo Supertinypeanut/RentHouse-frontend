@@ -23,7 +23,7 @@ export default class HouseList extends React.Component {
           icon={<Icon type="left" />}
           onLeftClick={() => this.props.history.goBack()
           }
-        >城市列表</NavBar>
+        >房源列表</NavBar>
 
         <div className={styles.root}>
           {/* 条件筛选栏 */}

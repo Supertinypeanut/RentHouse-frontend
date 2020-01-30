@@ -256,7 +256,7 @@ export default class Filter extends Component {
         {/* 数据列表 */}
         <WindowScroller>
           { ({height, isScrolling, scrollTop}) => (
-            <AutoSizer>
+            <AutoSizer style ={{ height:140*this.state.huoseData.length }}>
              {({ width }) => (
                <List
                   autoHeight
@@ -268,6 +268,7 @@ export default class Filter extends Component {
                   onScroll = { this.onScroll }
                   isScrolling={isScrolling}
                   scrollTop={scrollTop}
+                  style = {{paddingTop:0}}
                />
              )}
             </AutoSizer>
