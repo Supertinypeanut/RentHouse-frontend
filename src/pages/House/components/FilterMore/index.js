@@ -17,8 +17,6 @@ export default class FilterMore extends Component {
     this.judgmentConditionExist( value ) 
       ? defaultSelectCondition.splice(defaultSelectCondition.indexOf(value), 1)
       : defaultSelectCondition = [...defaultSelectCondition, value]
-
-    console.log(defaultSelectCondition)
     // 更新选中筛选条件
     this.setState( ()=>{
       return {

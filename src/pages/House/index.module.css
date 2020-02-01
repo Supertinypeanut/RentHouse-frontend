@@ -1,5 +1,5 @@
 .root {
-  /* padding-top: 45px; */
+  padding-top: 45px;
 }
 
 /* 顶部导航栏样式 */
@@ -24,9 +24,8 @@
 
 /* 覆盖 SearchHeader 组件的样式： */
 .searchHeader {
-  position: relative;
-  top: 0;
-  padding: 0;
+  top: 10px;
+  padding: 0 10px;
 }
 
 .searchHeader :global(.icon-map) {

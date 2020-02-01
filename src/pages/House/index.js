@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { NavBar, Icon } from 'antd-mobile'
-
+import SearchHeader from '../../component/SearchHeader'
 import Filter from './components/Filter'
 // 导入样式
 import styles from './index.module.css'
@@ -14,22 +14,14 @@ const CurrentCityData = getCurrentCityStorage()
 
 export default class HouseList extends React.Component {
   render() {
-    return (
-      <>
-        {/* 导航栏 */}
-        <NavBar
-          className={ styles.header }
-          mode="light"
-          icon={<Icon type="left" />}
-          onLeftClick={() => this.props.history.goBack()
-          }
-        >房源列表</NavBar>
 
-        <div className={styles.root}>
-          {/* 条件筛选栏 */}
-          <Filter CurrentCityData = { CurrentCityData } />
-        </div>
-      </>
+    return (
+      <div className={styles.root}>
+        {/* 导航栏 */}
+        <SearchHeader cityName ={ CurrentCityData.label } className ={styles.searchHeader}></SearchHeader>
+        {/* 条件筛选栏 */}
+        <Filter CurrentCityData = { CurrentCityData } />
+      </div>
     )
   }
 }

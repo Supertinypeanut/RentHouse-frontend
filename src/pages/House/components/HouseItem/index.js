@@ -1,6 +1,6 @@
 import React from 'react'
-import style from './index.module.css'
-import PropTypes from 'prop-types'
+// import style from './index.module.css'
+// import PropTypes from 'prop-types'
 // props
 // 1. cheldren -> 获取组件动态内容  <Child>adadsd</Child>
 // 2. defautProps -> 为组件设置默认属性  num
@@ -19,7 +19,7 @@ function HouseItem({ houseImg, title, tags, price, desc, onClick, style }) {
         <div className={styles.desc}>{desc}</div>
         <div>
           {/* ['近地铁', '随时看房'] */}
-          { tags && tags.map((tag, index) => {
+          { tags && tags.slice(0,3).map((tag, index) => {
             const tagClass = 'tag' + (index + 1)
             return (
               <span

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 
+import { Toast } from 'antd-mobile'
 // 导入列表组件
 import { AutoSizer, List, WindowScroller } from "react-virtualized"
 
@@ -82,7 +83,7 @@ export default class Filter extends Component {
       start = 1
       end = 20
       // 获取房屋数据
-      this.getHouse()
+      this.getHouse(true)
       // 清除当前选中信息
       currentCondition = ["null"]
     })
@@ -157,7 +158,7 @@ export default class Filter extends Component {
   }
 
   // 根据条件查询房屋
-  async getHouse(){
+  async getHouse(toastShow){
     // 调用请求参数处理
     const params = this.handleRequestCondition()
 
@@ -172,13 +173,14 @@ export default class Filter extends Component {
         requestCurrentHouse: true
       }
     })
+    // 轻提示
+    toastShow && Toast.info(`共找到${this.state.count}套房源`) 
   }
 
   // 上拉加载
   onScroll = ( data ) => {
     const { scrollHeight, scrollTop } = data
     // 当快接近底部时，发送请求获取下一页数据
-    console.log(scrollHeight , scrollTop , clientHeight)
     if ( scrollHeight < scrollTop + clientHeight + 300 
           && end < this.state.count 
           && this.state.requestCurrentHouse) {
@@ -268,7 +270,7 @@ export default class Filter extends Component {
                   onScroll = { this.onScroll }
                   isScrolling={isScrolling}
                   scrollTop={scrollTop}
-                  style = {{paddingTop:0}}
+                  style = {{paddingTop:0,paddingBottom:45,paddingLeft:10,paddingRight:10}}
                />
              )}
             </AutoSizer>

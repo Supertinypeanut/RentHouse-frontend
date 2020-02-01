@@ -44,11 +44,6 @@ const tabItems = [
 ]
 
 class index extends PureComponent {
-  state = {
-    // 当前地址栏路径
-    selectedTab: this.props.location.pathname,
-  }
-
   // 渲染tabBar
   renderTabBarItem (){
     // 遍历数据数组
@@ -58,13 +53,8 @@ class index extends PureComponent {
       key={item.id}
       icon={<i className={`iconfont ${item.icon}`} />}
       selectedIcon={<i className={`iconfont ${item.icon}`} />}
-      selected={this.state.selectedTab === item.path}
+      selected={this.props.location.pathname === item.path}
       onPress={() => {
-        // 更改当前选中的图标
-        this.setState({
-          selectedTab: item.path,
-        });
-
         // 更改路径，跳转路由
         this.props.history.push(item.path)
       }}
