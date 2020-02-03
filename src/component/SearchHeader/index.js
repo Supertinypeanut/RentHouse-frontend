@@ -13,7 +13,7 @@ function SearchHeader({ history, cityName, className }) {
   return (
     <Flex className={['search-box', className || ''].join(' ')}>
       {/* 右侧地图图标 */}
-      <i className="iconfont icon-back" onClick={() => history.goBack()} />
+      {className &&  <i className="iconfont icon-back" onClick={() => history.goBack()} />}
 
       {/* 左侧白色区域 */}
       <Flex className="search">
