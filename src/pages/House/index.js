@@ -20,7 +20,7 @@ export default class HouseList extends React.Component {
         {/* 导航栏 */}
         <SearchHeader cityName ={ CurrentCityData.label } className ={styles.searchHeader}></SearchHeader>
         {/* 条件筛选栏 */}
-        <Filter CurrentCityData = { CurrentCityData } />
+        <Filter CurrentCityData = { CurrentCityData } onClick={ id =>this.props.history.push(`/houseDetail?id=${id}`)} />
       </div>
     )
   }

@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { Carousel, Flex, Modal, Toast, NavBar, Icon } from 'antd-mobile'
-import axios from 'axios'
-import HouseItem from '../HouseItem'
+
+import { GetHouseDetailData } from '../../api/houseDetail'
+import HouseItem from '../House/components/HouseItem'
 import styles from './index.module.css'
-import HousePackage from '../../components/HousePackage'
+import HousePackage from '../../component/HousePackage'
 const BASE_URL = `http://localhost:8080`
 // 猜你喜欢
 const recommendHouses = [
@@ -135,11 +136,8 @@ export default class HouseDetail extends Component {
       isLoading: true
     })
 
-    const res = await axios.get(
-      `http://localhost:8080/houses/5cc47c8d1439630e5b47d45d`
-    )
-
-    // console.log(res.data.body)
+    const res = await GetHouseDetailData(id)
+    console.log(res.data.body)
 
     this.setState({
       houseInfo: res.data.body,
@@ -232,6 +230,8 @@ export default class HouseDetail extends Component {
           mode="dark"
           icon={<Icon type="left" />}
           onLeftClick={() => console.log('onLeftClick')}
+          // 导航右按钮     
+          rightContent={[<i key="share" className="iconfont icon-share" />]}
         >
           房屋详情
         </NavBar>

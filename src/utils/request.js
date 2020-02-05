@@ -9,3 +9,5 @@ const http = axios.create({
 })
 
 export default http
+
+export const pppp = 23

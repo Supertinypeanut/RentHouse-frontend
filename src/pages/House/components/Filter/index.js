@@ -27,8 +27,8 @@ let currentCondition = ["null"]
 // 查询房源开始项和结束项
 let start = 1, end = 20
 // 屏幕高
-const clientHeight = document.documentElement.clientHeight
 
+const clientHeight = document.documentElement.clientHeight
 export default class Filter extends Component {
   state = {
     // 当前筛选方式类型
@@ -208,10 +208,11 @@ export default class Filter extends Component {
   }
 
   // 渲染数据列表
-  renderHouseItem = ( { index, key, style } ) => {
+  renderHouseItem = ( { index, key, style} ) => {
     // 获取数据
     const { huoseData } = this.state
-    return <HouseItem key = { key } style = { style } { ...huoseData[index] } />
+    console.log(huoseData)
+    return <HouseItem key = { key } style = { style } { ...huoseData[index] } onClick={this.props.onClick} />
   }
 
   render() {
