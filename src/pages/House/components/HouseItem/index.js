@@ -8,9 +8,9 @@ import React from 'react'
 
 import styles from './index.module.css'
 
-function HouseItem({ houseImg, title, tags, price, desc, onClick, style }) {
+function HouseItem({ houseImg, title, tags, price, houseCode, desc, onClick, style }) {
   return (
-    <div className={styles.house} onClick={onClick} style={style}>
+    <div className={styles.house} onClick={() => onClick(houseCode)} style={style}>
       <div className={styles.imgWrap}>
         <img className={styles.img} src={ 'http://localhost:8080' + houseImg} alt="" />
       </div>

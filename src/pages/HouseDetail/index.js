@@ -10,7 +10,7 @@ const BASE_URL = `http://localhost:8080`
 const recommendHouses = [
   {
     id: 1,
-    src: BASE_URL + '/img/message/1.png',
+    houseImg: '/img/message/1.png',
     desc: '72.32㎡/南 北/低楼层',
     title: '安贞西里 3室1厅',
     price: 4500,
@@ -18,7 +18,7 @@ const recommendHouses = [
   },
   {
     id: 2,
-    src: BASE_URL + '/img/message/2.png',
+    houseImg: '/img/message/2.png',
     desc: '83㎡/南/高楼层',
     title: '天居园 2室1厅',
     price: 7200,
@@ -26,7 +26,7 @@ const recommendHouses = [
   },
   {
     id: 3,
-    src: BASE_URL + '/img/message/3.png',
+    houseImg: '/img/message/3.png',
     desc: '52㎡/西南/低楼层',
     title: '角门甲4号院 1室1厅',
     price: 4300,
@@ -137,7 +137,7 @@ export default class HouseDetail extends Component {
     })
 
     const res = await GetHouseDetailData(id)
-    console.log(res.data.body)
+    // console.log(res.data.body)
 
     this.setState({
       houseInfo: res.data.body,
@@ -227,13 +227,14 @@ export default class HouseDetail extends Component {
       <div className={styles.root}>
         {/* 导航栏 */}
         <NavBar
+          className={styles.navHeader}
           mode="dark"
           icon={<Icon type="left" />}
-          onLeftClick={() => console.log('onLeftClick')}
+          onLeftClick={() => this.props.history.goBack()}
           // 导航右按钮     
           rightContent={[<i key="share" className="iconfont icon-share" />]}
         >
-          房屋详情
+          {this.state.houseInfo.community}
         </NavBar>
         {/* 轮播图 */}
         <div className={styles.slides}>

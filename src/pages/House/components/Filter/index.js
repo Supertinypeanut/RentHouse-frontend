@@ -211,7 +211,6 @@ export default class Filter extends Component {
   renderHouseItem = ( { index, key, style} ) => {
     // 获取数据
     const { huoseData } = this.state
-    console.log(huoseData)
     return <HouseItem key = { key } style = { style } { ...huoseData[index] } onClick={this.props.onClick} />
   }
 

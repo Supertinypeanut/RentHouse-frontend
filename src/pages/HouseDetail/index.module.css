@@ -33,10 +33,11 @@
 }
 
 .navHeader {
-  position: absolute;
+  position: sticky;
+  top: 0;
   z-index: 2;
   color: rgb(255, 255, 255);
-  background-color: transparent;
+  background-color: #3fc28c!important;
 }
 
 /* 房屋基础信息 */
@@ -234,7 +235,7 @@
   height: 50px;
   line-height: 50px;
   border-top: 1px solid #cecece;
-  text-align: center;
+  text-align: center!important;
   font-size: 17px;
   color: #999;
   background-color: #fff;

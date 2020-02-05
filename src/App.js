@@ -18,7 +18,7 @@ function App() {
       <Route path="/map" component={Map} />
       <Route path="/search" component={Search} />
       <Route path="/cityList" component={CityList} />
-      <Route path="/houseDetail" component={HouseDetail} />
+      <Route path="/houseDetail/:id" component={HouseDetail} />
       </Switch>
     </Router>
   );
