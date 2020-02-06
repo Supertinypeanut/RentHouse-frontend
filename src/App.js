@@ -7,6 +7,7 @@ import Map from './pages/Map'
 import Search from './pages/Search'
 import CityList from './pages/CityList'
 import HouseDetail from './pages/HouseDetail'
+import Login from './pages/Login'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Route path="/search" component={Search} />
       <Route path="/cityList" component={CityList} />
       <Route path="/houseDetail/:id" component={HouseDetail} />
+      <Route path="/login" component={Login} />
       </Switch>
     </Router>
   );

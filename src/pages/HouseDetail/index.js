@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Carousel, Flex, Modal, Toast, NavBar, Icon } from 'antd-mobile'
 
+import { getTokenStorage } from '../../utils/storage'
 import { GetHouseDetailData } from '../../api/houseDetail'
 import HouseItem from '../House/components/HouseItem'
 import styles from './index.module.css'
@@ -127,6 +128,25 @@ export default class HouseDetail extends Component {
       ])
     */
 
+  // 点击收藏的执行逻辑
+  handleFavorite = () => {
+    // 提示是否需要收藏
+    alert('提示','登录后才能收藏房源，是否去登录？',
+      [{text:"取消"},
+       {text:'确定', onPress: ()=> {
+
+        //  进行判断是否登录,未登录跳转到登入页
+        if(!getTokenStorage()){
+          this.props.history.push('/login')
+          return
+        }
+
+        // 收藏该房源
+        
+      }}]
+    )
+  }
+
   // 获取房屋详细信息
   async getHouseDetail() {
     const { id } = this.props.match.params
@@ -135,6 +155,8 @@ export default class HouseDetail extends Component {
     this.setState({
       isLoading: true
     })
+    // 开启加载
+    Toast.loading('Loading...',0)
 
     const res = await GetHouseDetailData(id)
     // console.log(res.data.body)
@@ -144,6 +166,8 @@ export default class HouseDetail extends Component {
       isLoading: false
     })
 
+    // 关闭加载
+    Toast.hide()
     const { community, coord } = res.data.body
 
     // 渲染地图
@@ -343,7 +367,16 @@ export default class HouseDetail extends Component {
           <div className={styles.houseTitle}>猜你喜欢</div>
           <div className={styles.items}>
             {recommendHouses.map(item => (
-              <HouseItem {...item} key={item.id} />
+              <HouseItem 
+                {...item}
+                key={item.id}
+                houseCode = '5cc47c8d1439630e5b47d45d'
+                onClick ={ id => {
+                  this.props.history.push(`/houseDetail/${id}`)
+                  console.log(8888)
+                  // 页面重新渲染
+                  this.getHouseDetail()
+                } } />
             ))}
           </div>
         </div>

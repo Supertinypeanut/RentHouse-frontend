@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { NavBar, Icon } from 'antd-mobile'
+// import { NavBar, Icon } from 'antd-mobile'
 import SearchHeader from '../../component/SearchHeader'
 import Filter from './components/Filter'
 // 导入样式
