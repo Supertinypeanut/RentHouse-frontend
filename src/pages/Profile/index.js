@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 
 import { Link } from 'react-router-dom'
-import { Grid, Button } from 'antd-mobile'
+import { Grid, Button, Toast } from 'antd-mobile'
 
-import { isToken } from '../../utils/storage'
+import { isToken, removeTokenStorage } from '../../utils/storage'
+import { getUserInfo } from '../../api/profile' 
 import styles from './index.module.css'
 
 const BASE_URL = 'http://localhost:8080'
@@ -25,8 +26,42 @@ const menus = [
 const DEFAULT_AVATAR = BASE_URL + '/img/profile/avatar.png'
 
 export default class Profile extends Component {
+  state  = {
+    isLogin: isToken(),
+    userInfo: {}
+  }
+  // 获取用户信息
+  async getData() {
+    if (!this.state.isLogin) return
+
+    const {data} = await getUserInfo()
+
+    if (data.status === 200) {
+      this.setState(()=>{
+        return {
+          userInfo: data.body
+        }
+      })
+    } else {
+      Toast.info('登录时间过长，请重新登录', 2)
+    }
+  }
+  // 退出登录
+  logout = ()=> {
+    removeTokenStorage()
+    this.setState(()=> {
+      return {
+        userInfo: {}
+      }
+    })
+    Toast.success('退出成功', 1)
+  }
+  componentDidMount() {
+    this.getData()
+  }
   render() {
     const { history } = this.props
+    const { userInfo } = this.state
 
     return (
       <div className={styles.root}>
@@ -39,34 +74,34 @@ export default class Profile extends Component {
           />
           <div className={styles.info}>
             <div className={styles.myIcon}>
-              <img className={styles.avatar} src={DEFAULT_AVATAR} alt="icon" />
+              <img className={styles.avatar} src={userInfo?.avatar? BASE_URL + userInfo?.avatar : DEFAULT_AVATAR} alt="icon" />
             </div>
             <div className={styles.user}>
-              <div className={styles.name}>游客</div>
-              {/* 登录后展示： */}
-              {/* <>
-                <div className={styles.auth}>
-                  <span onClick={this.logout}>退出</span>
-                </div>
-                <div className={styles.edit}>
-                  编辑个人资料
-                  <span className={styles.arrow}>
-                    <i className="iconfont icon-arrow" />
-                  </span>
-                </div>
-              </> */}
-
-              {/* 未登录展示： */}
-              <div className={styles.edit}>
-                <Button
-                  type="primary"
-                  size="small"
-                  inline
-                  onClick={() => history.push('/login')}
-                >
-                  去登录
-                </Button>
-              </div>
+              <div className={styles.name}>{ userInfo?.nickname? userInfo.nickname : '游客'}</div>
+              {
+                this.state.isLogin ? 
+                  <>
+                    <div className={styles.auth}>
+                      <span onClick={this.logout}>退出</span>
+                    </div>
+                    <div className={styles.edit}>
+                      编辑个人资料
+                      <span className={styles.arrow}>
+                        <i className="iconfont icon-arrow" />
+                      </span>
+                    </div>
+                  </> : 
+                  <div className={styles.edit}>
+                    <Button
+                      type="primary"
+                      size="small"
+                      inline
+                      onClick={() => history.push('/login')}
+                    >
+                      去登录
+                    </Button>
+                  </div>
+              }
             </div>
           </div>
         </div>
