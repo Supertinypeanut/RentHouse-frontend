@@ -8,6 +8,7 @@ import Search from './pages/Search'
 import CityList from './pages/CityList'
 import HouseDetail from './pages/HouseDetail'
 import Login from './pages/Login'
+import Registe from './pages/Registe'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
       <Route path="/cityList" component={CityList} />
       <Route path="/houseDetail/:id" component={HouseDetail} />
       <Route path="/login" component={Login} />
+      <Route path="/registe" component={Registe} />
       </Switch>
     </Router>
   );
