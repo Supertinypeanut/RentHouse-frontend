@@ -5,7 +5,7 @@
 const CURRENTCITY = 'currentCity'
 const USERTOKEN = 'user_token'
 
-// token持久化
+// 当前城市持久化
 export const setCurrentCityStorage = (data) => {
     window.localStorage.setItem( CURRENTCITY, JSON.stringify(data))
 }
@@ -33,3 +33,6 @@ export const getTokenStorage = () =>
 export const removeTokenStorage = () =>{
     window.localStorage.removeItem( USERTOKEN )
 }
+
+// 判断是否存在token
+export const isToken = () => !! getTokenStorage()

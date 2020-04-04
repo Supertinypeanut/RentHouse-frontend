@@ -112,7 +112,7 @@ export default withFormik({
 
     // 对返回结果进行判断
     if (status === 200) {
-      setTokenStorage('token', body.token)
+      setTokenStorage(body.token)
       formBag.props.history.push('/')
     } else {
       Toast.info(description, 1)
