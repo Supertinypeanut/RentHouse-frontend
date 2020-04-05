@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Carousel, Flex, Modal, Toast, NavBar, Icon } from 'antd-mobile'
 
-import { getTokenStorage } from '../../utils/storage'
-import { GetHouseDetailData } from '../../api/houseDetail'
+import { isToken } from '../../utils/storage'
+import { GetHouseDetailData, GetHouseFavorites, PostHouseFavorites, DeleteHouseFavorites } from '../../api/houseDetail'
 import HouseItem from '../House/components/HouseItem'
 import styles from './index.module.css'
 import HousePackage from '../../component/HousePackage'
@@ -129,22 +129,43 @@ export default class HouseDetail extends Component {
     */
 
   // 点击收藏的执行逻辑
-  handleFavorite = () => {
-    // 提示是否需要收藏
-    alert('提示','登录后才能收藏房源，是否去登录？',
-      [{text:"取消"},
-       {text:'确定', onPress: ()=> {
+  handleFavorite = async () => {
+    //  进行判断是否登录,未登录跳转到登入页
+    if(!isToken()){
+      // 提示是否需要收藏
+      alert('提示','登录后才能收藏房源，是否去登录？',
+        [{text:"取消"},
+         {text:'确定', onPress: ()=> {
+           this.props.history.push('/login')
+          }}]
+        )
+      return
+    }
+  
+    const { id } = this.props.match.params
+    // 收藏该房源
+    if (this.state.isFavorite) {
+      const { data } = await DeleteHouseFavorites(id)
 
-        //  进行判断是否登录,未登录跳转到登入页
-        if(!getTokenStorage()){
-          this.props.history.push('/login')
-          return
-        }
-
-        // 收藏该房源
-        
-      }}]
-    )
+      if (data.status === 200) {
+        this.setState({
+          isFavorite: false
+        })
+        Toast.info('取消收藏成功', 1)
+        return
+      }
+      Toast.info('取消收藏失败', 1)
+    } else {
+      const { data } = await PostHouseFavorites(id)
+      if (data.status === 200) {
+        this.setState({
+          isFavorite: true
+        })
+        Toast.info('收藏成功', 1)
+        return
+      }
+      Toast.info('收藏失败', 1)
+    }
   }
 
   // 获取房屋详细信息
@@ -172,6 +193,26 @@ export default class HouseDetail extends Component {
 
     // 渲染地图
     this.renderMap(community, coord)
+
+    // 是否收藏
+    if (isToken()) {
+      const { data } = await GetHouseFavorites(id)
+
+      if (data.status === 200) {
+        this.setState(()=> {
+          return {
+            isFavorite: true
+          }
+        })
+      } else {
+        alert('提示','登录过期，是否去登录？',
+        [{text:"取消"},
+         {text:'确定', onPress: ()=> {
+           this.props.history.push('/login')
+          }}]
+        )
+      }
+    }
   }
 
   // 渲染轮播图结构
