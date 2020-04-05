@@ -9,6 +9,9 @@ import CityList from './pages/CityList'
 import HouseDetail from './pages/HouseDetail'
 import Login from './pages/Login'
 import Registe from './pages/Registe'
+import Rent from './pages/Rent'
+import RentAdd from './pages/Rent/Add'
+import RentSearch from './pages/Rent/Search'
 
 function App() {
   return (
@@ -23,6 +26,9 @@ function App() {
       <Route path="/houseDetail/:id" component={HouseDetail} />
       <Route path="/login" component={Login} />
       <Route path="/registe" component={Registe} />
+      <Route path="/rent" exact component={Rent} />
+      <Route path="/rent/add" component={RentAdd} />
+      <Route path="/rent/search" component={RentSearch} />
       </Switch>
     </Router>
   );

@@ -3,6 +3,8 @@
   flex-wrap: wrap;
   text-align: center;
   background: #fff;
+  list-style: none;
+  padding-left: 0;
 }
 
 .item {
