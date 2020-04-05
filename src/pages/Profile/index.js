@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 
 import { Link } from 'react-router-dom'
-import { Grid, Button, Toast } from 'antd-mobile'
+import { Grid, Button, Toast, Modal } from 'antd-mobile'
 
 import { isToken, removeTokenStorage } from '../../utils/storage'
 import { getUserInfo } from '../../api/profile' 
+import { postUserLogout } from '../../api/login'
 import styles from './index.module.css'
 
 const BASE_URL = 'http://localhost:8080'
@@ -27,18 +28,19 @@ const DEFAULT_AVATAR = BASE_URL + '/img/profile/avatar.png'
 
 export default class Profile extends Component {
   state  = {
-    isLogin: isToken(),
+    isLogin: false,
     userInfo: {}
   }
   // 获取用户信息
   async getData() {
-    if (!this.state.isLogin) return
+    if (!isToken()) return
 
     const {data} = await getUserInfo()
 
     if (data.status === 200) {
       this.setState(()=>{
         return {
+          isLogin: true,
           userInfo: data.body
         }
       })
@@ -48,13 +50,25 @@ export default class Profile extends Component {
   }
   // 退出登录
   logout = ()=> {
-    removeTokenStorage()
-    this.setState(()=> {
-      return {
-        userInfo: {}
+    Modal.alert('提示','确认退出登录吗', [
+      {text: '取消'},
+      {
+        text: '确定',
+        onPress: async ()=> {
+          const { data } = await postUserLogout()
+          if (data.status === 200) {
+            removeTokenStorage()
+            this.setState(()=> {
+              return {
+                isLogin: false,
+                userInfo: {}
+              }
+            })
+          } 
+          Toast.info(data.description, 1)
+        }
       }
-    })
-    Toast.success('退出成功', 1)
+    ])
   }
   componentDidMount() {
     this.getData()
