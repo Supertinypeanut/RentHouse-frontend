@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { NavBar } from 'antd-mobile'
+import { NavBar, Icon } from 'antd-mobile'
 
 import { Link } from 'react-router-dom'
 
@@ -47,7 +47,7 @@ export default class Rent extends Component {
         <HouseItem
           key={item.houseCode}
           onClick={() => {
-            history.push(`/detail/${item.houseCode}`)
+            history.push(`/houseDetail/${item.houseCode}`)
           }}
           src={BASE_URL + item.houseImg}
           title={item.title}
@@ -86,6 +86,7 @@ export default class Rent extends Component {
         <NavBar
           className={styles.navHeader}
           mode="dark"
+          icon={<Icon type="left" />}
           onLeftClick={() => history.go(-1)}
         >
           房屋管理

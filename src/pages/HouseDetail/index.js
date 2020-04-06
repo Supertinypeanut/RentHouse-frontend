@@ -413,8 +413,7 @@ export default class HouseDetail extends Component {
                 key={item.id}
                 houseCode = '5cc47c8d1439630e5b47d45d'
                 onClick ={ id => {
-                  this.props.history.push(`/houseDetail/${id}`)
-                  console.log(8888)
+                  this.props.history.replace(`/houseDetail/${id}`)
                   // 页面重新渲染
                   this.getHouseDetail()
                 } } />

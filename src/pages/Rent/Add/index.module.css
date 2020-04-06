@@ -4,7 +4,14 @@
 }
 
 .navHeader {
+  position: fixed;
+  width: 100%;
+  z-index: 2;
   background-color: #21b97a!important;
+}
+
+.header {
+  padding-top: 45px;
 }
 
 .bottom {
@@ -113,6 +120,10 @@
 .pics :global(.am-list-header) {
   color: #333;
   font-size: 14px;
+}
+
+.picker :global(.am-picker-popup-item) {
+  color: #21b97a!important;
 }
 
 .supporting :global(.am-list-header) {
