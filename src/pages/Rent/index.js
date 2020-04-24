@@ -9,7 +9,6 @@ import NoHouse from '../../component/NoHouse'
 
 import styles from './index.module.css'
 
-const BASE_URL = 'http://localhost:8080'
 export default class Rent extends Component {
   state = {
     // 出租房屋列表
@@ -41,15 +40,15 @@ export default class Rent extends Component {
     const { history } = this.props
 
     // console.log(list, history)
-
     return list.map(item => {
+      console.log(item.houseImg)
       return (
         <HouseItem
           key={item.houseCode}
           onClick={() => {
             history.push(`/houseDetail/${item.houseCode}`)
           }}
-          src={BASE_URL + item.houseImg}
+          houseImg={item.houseImg}
           title={item.title}
           desc={item.desc}
           tags={item.tags}

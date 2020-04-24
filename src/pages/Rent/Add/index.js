@@ -129,6 +129,10 @@ export default class RentAdd extends Component {
       description,
     } = this.state
 
+    if (!price.trim() || !size.trim()) {
+      Toast.info('价格和面积必须填写', 1)
+      return
+    }
     const { data } = await PostIssueHouse({
       community: community.id,
       price,

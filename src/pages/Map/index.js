@@ -1,17 +1,54 @@
 import React, { PureComponent } from 'react';
 
 import { NavBar, Icon } from 'antd-mobile';
-
+import { getCurrCity } from '../../utils/currentCity'
 import './index.scss'
 
-class index extends PureComponent {
+const labelStyle = {
+  color : "red",
+  fontSize : "12px",
+  height : "20px",
+  lineHeight : "20px",
+  background: "transparent",
+  border: "none",
+  fontFamily:"微软雅黑"
+}
 
+class index extends PureComponent {
   // 创建百度地图
-  renserBMap(){
-    var map = new window.BMap.Map("container"); 
-    var point = new window.BMap.Point(116.404, 39.915);
-    map.centerAndZoom(point, 15); 
-  }
+  async renserBMap(){
+    const BMap = window.BMap
+    const map = new BMap.Map("container"); 
+    const { label='北京' } = await getCurrCity()
+
+    // 创建地址解析器实例     
+    var myGeo = new BMap.Geocoder();      
+    // 将地址解析结果显示在地图上，并调整地图视野    
+    myGeo.getPoint(label, function(point){      
+      if (point) {
+          map.addControl(new BMap.NavigationControl());    
+          map.addControl(new BMap.ScaleControl());    
+          map.addControl(new BMap.OverviewMapControl());    
+          map.addControl(new BMap.MapTypeControl());   
+          map.centerAndZoom(point, 16);      
+
+          const opts = {
+            position : point,    // 指定文本标注所在的地理位置
+            offset   : new BMap.Size(0, 0)    //设置文本偏移量
+          }
+          const label = new BMap.Label("", opts);  // 创建文本标注对象
+          label.setContent(`
+            <div class="bubble">
+              <p class="name">浦东新区</p>
+              <p>388套</p>
+            </div>
+          `)
+          label.setStyle(labelStyle);
+          map.addOverlay(label);   
+        }      
+      }, 
+      label);
+    }
 
   componentDidMount(){
     this.renserBMap()
