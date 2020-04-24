@@ -5,7 +5,7 @@ const baseURL = 'http://localhost:8080'
 
 const http = axios.create({
     baseURL,
-    timeout: 1000
+    timeout: 10000
 })
 
 // 统一添加token
