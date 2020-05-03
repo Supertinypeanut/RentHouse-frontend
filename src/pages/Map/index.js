@@ -1,10 +1,9 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 
 import { NavBar, Icon, Toast } from 'antd-mobile';
 import { getCurrCity } from '../../utils/currentCity'
 import { getHouseData, getHouse } from '../../api/map'
 import './index.scss'
-import styles from './index.scss'
 
 const labelStyle = {
   color : "red",
@@ -18,11 +17,13 @@ const labelStyle = {
 
 const BASE_URL = `http://localhost:8080`
 
-class index extends PureComponent {
+class index extends React.Component {
   map = null
   BMap = null
-  houseList = []
-  loaded = false
+  state = {
+    houseList : [],
+    loaded : false,
+  }
 
   // 渲染房源覆盖物
   renderHouseOverlays = async id => {
@@ -112,7 +113,8 @@ class index extends PureComponent {
       getHouse(id).then(({ data }) => {
         if (data.status !== 200) return
         this.setState({
-          houseList: data.list
+          houseList: data.body.list,
+          loaded: true
         })
       })
     })
@@ -184,41 +186,40 @@ class index extends PureComponent {
 
   // 小区房源列表
   renderHouseList = () => {
-    console.log(this.state)
     const { houseList, loaded } = this.state
     return (
-      <div className={[styles.houseList, loaded ? styles.show : ''].join(' ')}>
-        <div className={styles.titleWrap}>
-          <h1 className={styles.listTitle}>房屋列表</h1>
-          <a className={styles.titleMore} href="/house/list">
+      <div className={['houseList', loaded ? 'show' : ''].join(' ')}>
+        <div className={'titleWrap'}>
+          <h1 className={'listTitle'}>房屋列表</h1>
+          <a className={'titleMore'} href="/home/list">
             更多房源
           </a>
         </div>
-        <div className={styles.houseItems}>
-          {houseList.map(item => (
-            <div key={item.houseCode} className={styles.house}>
-              <div className={styles.imgWrap}>
+        <div className={'houseItems'}>
+          {houseList && houseList.map(item => (
+            <div onClick={()=> this.props.history.push(`/houseDetail/${item.houseCode}`) } key={item.houseCode} className={'house'}>
+              <div className={'imgWrap'}>
                 <img
-                  className={styles.img}
+                  className={'img'}
                   src={BASE_URL + item.houseImg}
                   alt=""
                 />
               </div>
-              <div className={styles.content}>
-                <h3 className={styles.title}>{item.title}</h3>
-                <div className={styles.desc}>{item.desc}</div>
+              <div className={'content'}>
+                <h3 className={'title'}>{item.title}</h3>
+                <div className={'desc'}>{item.desc}</div>
                 <div>
                   {item.tags.map(tag => (
                     <span
                       key={tag}
-                      className={[styles.tag, styles.tag1].join(' ')}
+                      className={['tag', 'tag1'].join(' ')}
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
-                <div className={styles.price}>
-                  <span className={styles.priceNum}>{item.price}</span> 元/月
+                <div className={'price'}>
+                  <span className={'priceNum'}>{item.price}</span> 元/月
                 </div>
               </div>
             </div>
@@ -235,12 +236,12 @@ class index extends PureComponent {
         <NavBar
           mode="light"
           icon={<Icon type="left" />}
-          onLeftClick={() => console.log(this.props.history.goBack())
+          onLeftClick={() => this.props.history.goBack()
           }
         >地图找房</NavBar>
         {/* 百度地图容器 */}
         <div id="container" />
-        {/* { this.renderHouseList() } */}
+        { this.renderHouseList() }
       </>
 
     );
