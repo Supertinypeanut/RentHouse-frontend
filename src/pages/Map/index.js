@@ -2,8 +2,9 @@ import React, { PureComponent } from 'react';
 
 import { NavBar, Icon, Toast } from 'antd-mobile';
 import { getCurrCity } from '../../utils/currentCity'
-import { getHouseData } from '../../api/map'
+import { getHouseData, getHouse } from '../../api/map'
 import './index.scss'
+import styles from './index.scss'
 
 const labelStyle = {
   color : "red",
@@ -15,9 +16,13 @@ const labelStyle = {
   fontFamily:"微软雅黑"
 }
 
+const BASE_URL = `http://localhost:8080`
+
 class index extends PureComponent {
   map = null
   BMap = null
+  houseList = []
+  loaded = false
 
   // 渲染房源覆盖物
   renderHouseOverlays = async id => {
@@ -41,7 +46,6 @@ class index extends PureComponent {
       label: labelName 
     } = item
     const point = new this.BMap.Point(longitude, latitude)
-    console.log(point)
     if (type === 'circle') {
       this.createCircle(point, count, valueArea, labelName, nextLevel)
     } else {
@@ -65,10 +69,21 @@ class index extends PureComponent {
     label.setStyle(labelStyle)
     
     // 点击覆盖物
-    label.addEventListener('click', ()=> {
+    label.addEventListener('click', e => {
+      // 移动地图
+      const { clientX, clientY } = e.changedTouches[0]
+      // 移动距离
+      // 中心点Y-当前点Y
+      // 中心点X-当前点X
+      // Y: (window.innerHeight - 330)/2 - 当前Y
+      // X: (window.innerWidth / 2) - 当前点X
+
+      const x = (window.innerHeight - 330) / 2 - clientX
+      const y = window.innerWidth / 2 - clientY
+      this.map.panBy(x, y)
+
       this.renderHouseOverlays(valueArea)
       this.map.centerAndZoom(point, nextLevel)
-      console.log(point, nextLevel)
       setTimeout( ()=>{
         // 清除所有覆盖物
         this.map.clearOverlays()
@@ -94,7 +109,12 @@ class index extends PureComponent {
     label.setStyle(labelStyle)
     label.addEventListener('click', () => {
       // 移动地图
-      console.log('小区被点击了', id)
+      getHouse(id).then(({ data }) => {
+        if (data.status !== 200) return
+        this.setState({
+          houseList: data.list
+        })
+      })
     })
 
     this.map.addOverlay(label)
@@ -129,6 +149,14 @@ class index extends PureComponent {
     this.BMap = window.BMap
     this.map = new this.BMap.Map("container"); 
     const { label='北京市', value } = await getCurrCity()
+    // 地图移动时隐藏房源列表
+    this.map.addEventListener('movestart', () => {
+      this.setState(() => {
+        return {
+          loaded: false
+        }
+      })
+    })
 
     // 创建地址解析器实例     
     var myGeo = new this.BMap.Geocoder()   
@@ -153,6 +181,52 @@ class index extends PureComponent {
   componentDidMount() {
     this.renserBMap()
   }
+
+  // 小区房源列表
+  renderHouseList = () => {
+    console.log(this.state)
+    const { houseList, loaded } = this.state
+    return (
+      <div className={[styles.houseList, loaded ? styles.show : ''].join(' ')}>
+        <div className={styles.titleWrap}>
+          <h1 className={styles.listTitle}>房屋列表</h1>
+          <a className={styles.titleMore} href="/house/list">
+            更多房源
+          </a>
+        </div>
+        <div className={styles.houseItems}>
+          {houseList.map(item => (
+            <div key={item.houseCode} className={styles.house}>
+              <div className={styles.imgWrap}>
+                <img
+                  className={styles.img}
+                  src={BASE_URL + item.houseImg}
+                  alt=""
+                />
+              </div>
+              <div className={styles.content}>
+                <h3 className={styles.title}>{item.title}</h3>
+                <div className={styles.desc}>{item.desc}</div>
+                <div>
+                  {item.tags.map(tag => (
+                    <span
+                      key={tag}
+                      className={[styles.tag, styles.tag1].join(' ')}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <div className={styles.price}>
+                  <span className={styles.priceNum}>{item.price}</span> 元/月
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
     
   render() {
     return (
@@ -166,6 +240,7 @@ class index extends PureComponent {
         >地图找房</NavBar>
         {/* 百度地图容器 */}
         <div id="container" />
+        {/* { this.renderHouseList() } */}
       </>
 
     );
