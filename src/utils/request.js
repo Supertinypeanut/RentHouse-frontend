@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { getTokenStorage } from './storage'
+import { Toast } from 'antd-mobile'
 // 设置基地值
 const baseURL = 'http://localhost:8080'
 
@@ -10,6 +11,7 @@ const http = axios.create({
 
 // 统一添加token
 http.interceptors.request.use( config =>{
+  Toast.loading('加载中', 0, null, false)
   if (
         config.url.startsWith('/user') && 
         !config.url.startsWith('/user/registered') && 
@@ -20,6 +22,9 @@ http.interceptors.request.use( config =>{
     return config
 },error => Promise.reject(error) )
 
-export default http
+http.interceptors.response.use( res => {
+  Toast.hide()
+  return res
+} )
 
-export const pppp = 23
+export default http
